@@ -11,6 +11,14 @@ class Database
             echo 'ERROR: ' . $e->getMessage();
         }
     }
+    public static function setPdo($obj)
+    {
+        self::$pdo = $obj;
+    }
+    public static function getPdo()
+    {
+        return self::$pdo;
+    }
     public static function query($query, $params = array())
     {
         self::$query = self::$pdo->prepare($query);
@@ -21,6 +29,15 @@ class Database
         }
         
         return self::$query;
+    }
+    public static function fetch_assoc($query)
+    {
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
+    public static function fetch_safe_assoc($query)
+    {
+        $res = self::walk_recursive($query->fetch(PDO::FETCH_ASSOC), 'htmlspecialchars');
+        return $res;
     }
     public static function fetch_object($query)
     {

@@ -9,9 +9,13 @@ An easy to use class for Database queries in PHP.
 ## API
 ```php
 Database::connect($db='test',$pass='',$user='root',$host='localhost',$type='mysql');
+Database::getPdo();
+Database::setPdo($db);
 Database::query($query, $params = array());
 Database::fetchAll($query);
 Database::fetchAll_safe($query);
+Database::fetch_assoc($query);
+Database::fetch_safe_assoc($query);
 Database::fetch_object($query);
 Database::fetch_safe_object($query);
 Database::num_rows($query);
@@ -25,6 +29,21 @@ Database::connect('database','password','username','host');
 ```
 
 Note the reverse parameters. We do this because of the ommitable variables.
+
+### PDO Objects
+
+If you want to use an existing PDO object to connect:
+
+```php
+$db = new PDO; # Use Connection details
+Database::setPdo($db); # Pass the object
+```
+
+If you want to use this database's PDO object to pass to other objects:
+
+```php
+$db = Database::getPdo(); # Returns PDO object after connect() is called
+```
 
 ### Query
 ```php
