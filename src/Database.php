@@ -40,6 +40,7 @@ class Database
             try {
                 $this->pdo = new PDO($this->type.':host='.$this->host.';dbname='.$this->dbname, $this->user, $this->pass);
                 $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
             } catch(PDOException $e) {
                 echo 'ERROR: ' . $e->getMessage();
             }
@@ -48,6 +49,7 @@ class Database
     public function setPdo($obj)
     {
         $this->pdo = $obj;
+        $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     }
     public function getPdo()
     {
@@ -108,7 +110,6 @@ class Database
         $id = $this->pdo->lastInsertId();
         return $id;
     }
-    
     public function insert($table, $data)
     {
         $keys = ""; $values = "";
@@ -121,7 +122,6 @@ class Database
         $statement = "INSERT INTO $table ($keys) VALUES ($values)";
         $this->query($statement);
     }
-    
     public function update($table, $data)
     {
         $values = "";
@@ -131,7 +131,6 @@ class Database
         $statement = "UPDATE $table SET $values";
         $this->query($statement);
     }
-    
     public function store($table, $match='id', $data)
     {
         $query = $this->query("SELECT $match FROM $table WHERE $match = ".$this->quote($data['url']));
@@ -141,7 +140,6 @@ class Database
             $this->update($table, $data);
         }
     }
-
     public function walk_recursive($obj, $closure)
     {
         if ( is_object($obj) )
