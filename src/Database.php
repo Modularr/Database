@@ -108,6 +108,39 @@ class Database
         $id = $this->pdo->lastInsertId();
         return $id;
     }
+    
+    public function insert($table, $data)
+    {
+        $keys = ""; $values = "";
+        foreach($data as $key => $value) {
+            $keys .= "$key,";
+        } $keys = substr($keys, 0, -1);
+        foreach($data as $key => $value) {
+            $values .= $this->quote($value).",";
+        } $values = substr($values, 0, -1);
+        $statement = "INSERT INTO $table ($keys) VALUES ($values)";
+        $this->query($statement);
+    }
+    
+    public function update($table, $data)
+    {
+        $values = "";
+        foreach($data as $key => $value) {
+            $values .= "$key = ".$this->quote($value).", ";
+        } $values = substr($values, 0, -2);
+        $statement = "UPDATE $table SET $values";
+        $this->query($statement);
+    }
+    
+    public function store($table, $match='id', $data)
+    {
+        $query = $this->query("SELECT $match FROM $table WHERE $match = ".$this->quote($data['url']));
+        if($this->num_rows($query) == 0) {
+            $this->insert($table, $data);
+        } else {
+            $this->update($table, $data);
+        }
+    }
 
     public function walk_recursive($obj, $closure)
     {

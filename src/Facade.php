@@ -54,6 +54,18 @@ class DB
     {
         return self::$db->num_rows($query);
     }
+    public static function insert($table, $data)
+    {
+        return self::$db->insert($table, $data);
+    }
+    public static function update($table, $data)
+    {
+        return self::$db->update($table, $data);
+    }
+    public static function store($table, $match='id', $data)
+    {
+        return self::$db->store($table, $match, $data);
+    }
     public static function insert_id()
     {
         return self::$db->insert_id($query);

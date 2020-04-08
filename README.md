@@ -27,12 +27,12 @@ See Below for usage.
 
 ## Connections
 
-Our class lets you connect to PDO whichever way you choose, This maximizes flexibility by letting you simply give us your already existing object, or by using our class as your primary Database package and asking for the PDO object if you need to pass it to other libraries.
+This class lets you connect to PDO whichever way you choose, This maximizes flexibility by letting you simply give us your already existing object, or by using our class as your primary Database package and asking for the PDO object if you need to pass it to other libraries.
 
 
 ### Connection Syntax
 
-We let you connect using multiple syntax to make it easy to use, available both in the `__construct()` as well as `connect()`
+You can connect using multiple syntax to make it easy to use, available both in the `__construct()` as well as `connect()`
 
 You can either use an associative array or the default which uses reverse order to let you define the most important values first, and lets you default irrelevant values such as host or type to it's defaults ('mysql' and 'localhost')
 
