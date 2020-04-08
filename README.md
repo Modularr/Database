@@ -12,7 +12,7 @@ An easy to use class for Database queries in PHP.
 DB::connect($db='test',$pass='',$user='root',$host='localhost',$type='mysql');
 DB::getPdo();
 DB::setPdo($db);
-DB::quote();
+DB::quote($string,$remove_quotes=false);
 DB::query($query, $params = array());
 DB::fetchAll($query);
 DB::fetchAll_safe($query);
@@ -104,6 +104,34 @@ This is a query with bind parameters.
 First argument is the statement, second argument is an array of parameters (optional)
 
 Note: We passed the query into a variable for later re-use.
+
+### Quote
+```php
+$quoted_string = DB::quote($_GET['id']);
+```
+
+```php
+# Remove Quotes after quoting, and right before output,
+# giving you a similar string as mysql_real_escape_string
+$quoted_string = DB::quote($_GET['id'], 1);
+```
+
+Escaping in PDO adds quotes around the escaped string, which is an issue if you try doing a **LIKE** query:
+
+```php
+# Default Quote adds '' quotes around the field, forcing you to do:
+DB::query("SELECT * FROM table WHERE field LIKE ?", ['%'.$input.'%']);
+DB::query("SELECT * FROM table WHERE field LIKE ".DB::quote('%'.$input.'%'));
+
+# Removed Quoting, quotes but removes added quotes
+DB::query("SELECT * FROM table WHERE field LIKE '%".DB::quote($input,1)."%'";
+```
+
+PDO does not provide a way to turn off quotes around escaped strings so, we created a function that simply removes the quotes (first and last characters).
+This returns a string similar to the old [mysql_real_escape_string](http://php.net/manual/en/function.mysql-real-escape-string.php) function.
+
+Please note that this requires you to start adding quotes yourself. Escaping is the default when you bind parameters in PDO.
+As such, escaping is turned on by default as per the original function (passthrough).
 
 ### Fetch and **Safe Fetch**
 This is regular returned object. You still need to apply htmlspecialchars yourself.

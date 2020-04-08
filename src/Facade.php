@@ -18,9 +18,9 @@ class DB
     {
         return self::$db->getPdo();
     }
-    public static function quote($string)
+    public static function quote($string,$remove_quotes=false)
     {
-        return self::$db->quote($string);
+        return self::$db->quote($string,$remove_quotes);
     }
     public static function query($query, $params = array())
     {

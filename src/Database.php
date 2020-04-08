@@ -53,9 +53,13 @@ class Database
     {
         return $this->pdo;
     }
-    public function quote($string)
+    public function quote($string,$remove_quotes=false)
     {
-        return $this->pdo->quote($string);
+        $data = $this->pdo->quote($string);
+        if($remove_quotes) {
+            $data = substr($data, 1, -1);
+        }
+        return $data;
     }
     public function query($query, $params = array())
     {
