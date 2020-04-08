@@ -1,0 +1,10 @@
+{
+    "name": "modularr/database",
+    "type": "library",
+    "description": "Simple Database Library",
+    "keywords": ["modularr","database","mysql","pdo"],
+    "license": "UNLICENSE",
+    "autoload": {
+        "classmap": ["src/", "src/Database.php"]
+    }
+}
