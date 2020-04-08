@@ -5,6 +5,6 @@
     "keywords": ["modularr","database","mysql","pdo"],
     "license": "UNLICENSE",
     "autoload": {
-        "classmap": ["src/", "src/Database.php"]
+        "classmap": ["src/", "src/Main.php"]
     }
 }

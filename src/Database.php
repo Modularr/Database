@@ -1,73 +1,111 @@
 <?php
 class Database
 {
-    public static $pdo,$query,$res;
-    public static function connect($db='test',$pass='',$user='root',$host='localhost',$type='mysql')
+    public $pdo;
+    private $query,$res;
+    private $host   = 'localhost';
+    private $type   = 'mysql';
+    private $dbname = 'test';
+    private $user   = 'root';
+    private $pass   = '';
+    public function __construct($data=null,$pass=null,$user=null,$host=null,$type=null)
     {
-        try {
-            self::$pdo = new PDO("$type:host=$host;dbname=$db", $user, $pass);
-            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $e) {
-            echo 'ERROR: ' . $e->getMessage();
+        if( isset($data) || isset($pass) || isset($user) || isset($host) || isset($type) ) {
+            if(is_array($data)) {
+                if(isset($data['dbname'])) { $this->dbname = $data['dbname']; }
+                if(isset($data['pass']))   { $this->pass   = $data['pass'];   }
+                if(isset($data['user']))   { $this->user   = $data['user'];   }
+                if(isset($data['host']))   { $this->host   = $data['host'];   }
+                if(isset($data['type']))   { $this->type   = $data['type'];   }
+            } else {
+                if(isset($data)) { $this->dbname = $data; }
+                if(isset($pass)) { $this->pass   = $pass; }
+                if(isset($user)) { $this->user   = $user; }
+                if(isset($host)) { $this->host   = $host; }
+                if(isset($type)) { $this->type   = $type; }
+            }
+            $this->connect();
         }
     }
-    public static function setPdo($obj)
+    public function connect($data=null,$pass=null,$user=null,$host=null,$type=null)
     {
-        self::$pdo = $obj;
+        if( isset($data) || isset($pass) || isset($user) || isset($host) || isset($type) ) {
+            if(isset($data)) { $this->dbname = $data; }
+            if(isset($pass)) { $this->pass   = $pass; }
+            if(isset($user)) { $this->user   = $user; }
+            if(isset($host)) { $this->host   = $host; }
+            if(isset($type)) { $this->type   = $type; }
+        }
+        if(isset($this->type) || isset($this->host) || isset($this->$user) || isset($this->pass) || isset($this->dbname)) {
+            try {
+                $this->pdo = new PDO($this->type.':host='.$this->host.';dbname='.$this->dbname, $this->user, $this->pass);
+                $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch(PDOException $e) {
+                echo 'ERROR: ' . $e->getMessage();
+            }
+        }
     }
-    public static function getPdo()
+    public function setPdo($obj)
     {
-        return self::$pdo;
+        $this->pdo = $obj;
     }
-    public static function query($query, $params = array())
+    public function getPdo()
     {
-        self::$query = self::$pdo->prepare($query);
+        return $this->pdo;
+    }
+    public function quote($string)
+    {
+        return $this->pdo->quote($string);
+    }
+    public function query($query, $params = array())
+    {
+        $this->query = $this->pdo->prepare($query);
         if(!empty($params)) {
-            self::$query->execute($params);
+            $this->query->execute($params);
         } else {
-            self::$query->execute();
+            $this->query->execute();
         }
-        
-        return self::$query;
+
+        return $this->query;
     }
-    public static function fetch_assoc($query)
+    public function fetch_assoc($query)
     {
         return $query->fetch(PDO::FETCH_ASSOC);
     }
-    public static function fetch_safe_assoc($query)
+    public function fetch_safe_assoc($query)
     {
-        $res = self::walk_recursive($query->fetch(PDO::FETCH_ASSOC), 'htmlspecialchars');
+        $res = $this->walk_recursive($query->fetch(PDO::FETCH_ASSOC), 'htmlspecialchars');
         return $res;
     }
-    public static function fetch_object($query)
+    public function fetch_object($query)
     {
         return $query->fetch(PDO::FETCH_OBJ);
     }
-    public static function fetch_safe_object($query)
+    public function fetch_safe_object($query)
     {
-        $res = self::walk_recursive($query->fetch(PDO::FETCH_OBJ), 'htmlspecialchars');
+        $res = $this->walk_recursive($query->fetch(PDO::FETCH_OBJ), 'htmlspecialchars');
         return $res;
     }
-    public static function fetchAll($query)
+    public function fetchAll($query)
     {
         return $query->fetchAll(PDO::FETCH_OBJ);
     }
-    public static function fetchAll_safe($query)
+    public function fetchAll_safe($query)
     {
-        $res = self::walk_recursive($query->fetchAll(PDO::FETCH_OBJ), 'htmlspecialchars');
+        $res = $this->walk_recursive($query->fetchAll(PDO::FETCH_OBJ), 'htmlspecialchars');
         return $res;
     }
-    public static function num_rows($query)
+    public function num_rows($query)
     {
         return $query->rowCount();
     }
-    public static function insert_id()
+    public function insert_id()
     {
-        $id = self::$pdo->lastInsertId();
+        $id = $this->pdo->lastInsertId();
         return $id;
     }
-    
-    public static function walk_recursive($obj, $closure)
+
+    public function walk_recursive($obj, $closure)
     {
         if ( is_object($obj) )
         {
@@ -75,7 +113,7 @@ class Database
             foreach ($obj as $property => $value)
             {
                 $newProperty = $closure($property);
-                $newValue = self::walk_recursive($value, $closure);
+                $newValue = $this->walk_recursive($value, $closure);
                 $newObj->$newProperty = $newValue;
             }
             return $newObj;
@@ -86,7 +124,7 @@ class Database
             foreach ($obj as $key => $value)
             {
                 $key = $closure($key);
-                $newArray[$key] = self::walk_recursive($value, $closure);
+                $newArray[$key] = $this->walk_recursive($value, $closure);
             }
             return $newArray;
         }
