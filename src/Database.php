@@ -31,9 +31,23 @@ class Database
         $res = self::walk_recursive($query->fetch(PDO::FETCH_OBJ), 'htmlspecialchars');
         return $res;
     }
+    public static function fetchAll($query)
+    {
+        return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+    public static function fetchAll_safe($query)
+    {
+        $res = self::walk_recursive($query->fetchAll(PDO::FETCH_OBJ), 'htmlspecialchars');
+        return $res;
+    }
     public static function num_rows($query)
     {
         return $query->rowCount();
+    }
+    public static function insert_id()
+    {
+        $id = self::$pdo->lastInsertId();
+        return $id;
     }
     
     public static function walk_recursive($obj, $closure)

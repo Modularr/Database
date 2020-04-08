@@ -1,6 +1,23 @@
-Database
+# Database
 
 An easy to use class for Database queries in PHP.
+
+- [API](#api)
+- [Examples](#data-examples)
+- [Install](#installation)
+
+## API
+```php
+Database::connect($db='test',$pass='',$user='root',$host='localhost',$type='mysql');
+Database::query($query, $params = array());
+Database::fetchAll($query);
+Database::fetchAll_safe($query);
+Database::fetch_object($query);
+Database::fetch_safe_object($query);
+Database::num_rows($query);
+```
+
+See Below for usage.
 
 ### Connecting
 ```php
@@ -8,12 +25,6 @@ Database::connect('database','password','username','host');
 ```
 
 Note the reverse parameters. We do this because of the ommitable variables.
-
-**Defaults:**
-    dbhost = localhost
-    dbuser = root
-    dbpass = root
-    dbname = test
 
 ### Query
 ```php
